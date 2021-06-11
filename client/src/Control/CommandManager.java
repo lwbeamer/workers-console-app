@@ -18,6 +18,7 @@ public class CommandManager {
     private final Receiver receiver;
     private final UserDataReceiver userDataReceiver;
     private String currentUser = null;
+    private String currentPassword = null;
 
 
     public CommandManager(Sender sender, Receiver receiver, UserDataReceiver userDataReceiver) {
@@ -111,6 +112,7 @@ public class CommandManager {
 
             Request request = new Request("add", new Worker(0, userDataReceiver.askName(), userDataReceiver.askCoordinates(), ZonedDateTime.now(), userDataReceiver.askSalary(), userDataReceiver.askPosition(), userDataReceiver.askStatus(), userDataReceiver.askPerson()));
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -138,6 +140,7 @@ public class CommandManager {
 
             Request request = new Request("add_if_max", new Worker(0, userDataReceiver.askName(), userDataReceiver.askCoordinates(), ZonedDateTime.now(), userDataReceiver.askSalary(), userDataReceiver.askPosition(), userDataReceiver.askStatus(), userDataReceiver.askPerson()));
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -165,6 +168,7 @@ public class CommandManager {
 
             Request request = new Request("add_if_min", new Worker(0, userDataReceiver.askName(), userDataReceiver.askCoordinates(), ZonedDateTime.now(), userDataReceiver.askSalary(), userDataReceiver.askPosition(), userDataReceiver.askStatus(), userDataReceiver.askPerson()));
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -192,6 +196,7 @@ public class CommandManager {
 
             Request request = new Request("clear");
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -212,14 +217,16 @@ public class CommandManager {
      * @return статус выполнения команды
      */
     public boolean executeScript(String argument) {
-
         try {
+            if (currentUser == null) throw new UnauthorizedAcces();
             argument = argument.trim();
             if (argument.isEmpty()) throw new WrongArgumentException();
             Outputer.println("Выполняю скрипт '" + argument + "'...");
             return true;
         } catch (WrongArgumentException e) {
             Outputer.printError("Укажите файл со скриптом в качестве аргумента.");
+        } catch (UnauthorizedAcces e){
+            Outputer.printError("Вы должны авторизироваться для выполнения данной команды");
         }
         return false;
     }
@@ -237,7 +244,11 @@ public class CommandManager {
         try {
             if (!argument.isEmpty()) throw new WrongArgumentException();
 
+            if (currentUser == null) throw new UnauthorizedAcces();
+
             Request request = new Request("info");
+            request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -246,6 +257,8 @@ public class CommandManager {
             Outputer.printError("Для этой комманды не нужен аргумент, попробуйте ещё раз");
         } catch (IOException e){
             Outputer.printError("Непредвиденная ошибка");
+        } catch (UnauthorizedAcces e){
+            Outputer.printError("Вы должны авторизироваться для выполнения данной команды");
         }
         return false;
     }
@@ -256,13 +269,15 @@ public class CommandManager {
      * @return статус выполнения команды
      */
     public boolean printFieldDescendingStatus(String argument) {
-
         try {
 
             if (!argument.isEmpty()) throw new WrongArgumentException();
 
+            if (currentUser == null) throw new UnauthorizedAcces();
 
             Request request = new Request("print_field_descending_status");
+            request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -271,6 +286,8 @@ public class CommandManager {
             Outputer.printError("Для этой комманды не нужен аргумент, попробуйте ещё раз");
         } catch (IOException e){
             Outputer.printError("Непредвиденная ошибка");
+        } catch (UnauthorizedAcces e){
+            Outputer.printError("Вы должны авторизироваться для выполнения данной команды");
         }
         return false;
     }
@@ -288,6 +305,7 @@ public class CommandManager {
 
             Request request = new Request("remove_all_by_person", userDataReceiver.askPerson());
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -316,6 +334,7 @@ public class CommandManager {
 
             Request request = new Request("remove_by_id", argument);
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -343,6 +362,7 @@ public class CommandManager {
 
             Request request = new Request("remove_head");
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -375,7 +395,11 @@ public class CommandManager {
         try {
             if (!argument.isEmpty()) throw new WrongArgumentException();
 
+            if (currentUser == null) throw new UnauthorizedAcces();
+
             Request request = new Request("show");
+            request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -384,6 +408,8 @@ public class CommandManager {
             Outputer.printError("Для этой комманды не нужен аргумент, попробуйте ещё раз");
         } catch (IOException e){
             Outputer.printError("Непредвиденная ошибка");
+        } catch (UnauthorizedAcces e){
+            Outputer.printError("Вы должны авторизироваться для выполнения данной команды");
         }
         return false;
     }
@@ -403,6 +429,7 @@ public class CommandManager {
 
             Request request = new Request("update", argument);
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -432,6 +459,7 @@ public class CommandManager {
 
             request = new Request("add",new Worker(id,name,coordinates,creationDate,salary,position,status,person));
             request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -460,7 +488,11 @@ public class CommandManager {
 
             if (argument.isEmpty()) throw new WrongArgumentException();
 
+            if (currentUser == null) throw new UnauthorizedAcces();
+
             Request request = new Request("filter_by_status",argument);
+            request.setCurrentUser(currentUser);
+            request.setCurrentPassword(currentPassword);
             sender.sendCommand(request);
             receiver.receive();
 
@@ -469,6 +501,8 @@ public class CommandManager {
             Outputer.printError("Введите статус!");
         } catch (IOException e){
             Outputer.printError("Непредвиденная ошибка");
+        } catch (UnauthorizedAcces e){
+            Outputer.printError("Вы должны авторизироваться для выполнения данной команды");
         }
         return false;
     }
@@ -515,6 +549,7 @@ public class CommandManager {
             receiver.receive();
 
             currentUser = args[0];
+            currentPassword = args[1];
 
             return true;
         } catch (WrongArgumentException e){
