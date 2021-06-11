@@ -32,7 +32,7 @@ public class Save implements Executable{
      * @return Статус выполнения команды
      */
     @Override
-    public void execute(Object argument, String currentUser) {
+    public void execute(Object argument, String currentUser, String currentPassword) {
         try {
             String strArg = (String) argument;
             if (!strArg.isEmpty()) throw new WrongArgumentException();

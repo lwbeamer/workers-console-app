@@ -4,8 +4,10 @@ package CommandsOnServer;
 import Answer.Answer;
 import Answer.AnswerStatus;
 import Control.CollectionOperator;
+import Control.Database;
 import Control.Sender;
 import Exceptions.EmptyCollectionException;
+import Exceptions.PermissonDeniedException;
 import WorkerData.Worker;
 
 /**
@@ -17,11 +19,13 @@ public class PrintFieldDescendingStatus implements Executable{
 
     private final CollectionOperator collectionOperator;
     private final Sender sender;
+    private final Database database;
 
 
-    public PrintFieldDescendingStatus(CollectionOperator collectionOperator, Sender sender) {
+    public PrintFieldDescendingStatus(CollectionOperator collectionOperator, Sender sender, Database database) {
         this.collectionOperator = collectionOperator;
         this.sender = sender;
+        this.database = database;
     }
 
 
@@ -39,8 +43,9 @@ public class PrintFieldDescendingStatus implements Executable{
      * @return Статус выполнения команды
      */
     @Override
-    public void execute(Object argument, String currentUser) {
+    public void execute(Object argument, String currentUser, String currentPassword) {
         try {
+            if (!database.checkUser(currentUser,currentPassword)) throw new PermissonDeniedException();
             if (collectionOperator.collectionSize() == 0) throw new EmptyCollectionException();
             collectionOperator.sortReverseCollection();
             StringBuilder stringBuilder = new StringBuilder();
@@ -51,6 +56,8 @@ public class PrintFieldDescendingStatus implements Executable{
             sender.send(new Answer(stringBuilder.toString(), AnswerStatus.OK));
         }  catch (EmptyCollectionException e) {
             sender.send(new Answer("Коллекция пуста!", AnswerStatus.ERROR));
+        } catch (PermissonDeniedException e){
+            sender.send(new Answer("У вас нет прав для выполнения данной операции!",AnswerStatus.ERROR));
         }
     }
 }

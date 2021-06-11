@@ -52,51 +52,53 @@ public class CommandManager {
     private String userCommand;
     private Object argument;
     private String currentUser;
+    private String currentPassword;
 
     public void executeCommand(Request request){
         userCommand = request.getCommand();
         argument = request.getArg();
         currentUser = request.getCurrentUser();
+        currentPassword = request.getCurrentPassword();
 
         switch (userCommand){
             case ("help"):
                 help();
                 break;
             case ("show"):
-                show();
+                show(currentUser, currentPassword);
                 break;
             case ("info"):
-                info();
+                info(currentUser, currentPassword);
                 break;
             case ("add"):
-                add((Worker) argument, currentUser);
+                add((Worker) argument, currentUser, currentPassword);
                 break;
             case ("update"):
-                update(argument, currentUser);
+                update(argument, currentUser, currentPassword);
                 break;
             case ("add_if_max"):
-                addIfMax((Worker) argument, currentUser);
+                addIfMax((Worker) argument, currentUser, currentPassword);
                 break;
             case ("add_if_min"):
-                addIfMin((Worker) argument, currentUser);
+                addIfMin((Worker) argument, currentUser, currentPassword);
                 break;
             case ("clear"):
-                clear(currentUser);
+                clear(currentUser, currentPassword);
                 break;
             case ("filter_by_status"):
-                filterByStatus(argument);
+                filterByStatus(argument, currentUser, currentPassword);
                 break;
             case ("print_field_descending_status"):
-                printFieldDescendingStatus();
+                printFieldDescendingStatus(currentUser, currentPassword);
                 break;
             case ("remove_all_by_person"):
-                removeAllByPerson(argument,currentUser);
+                removeAllByPerson(argument,currentUser, currentPassword);
                 break;
             case ("remove_by_id"):
-                removeById(argument,currentUser);
+                removeById(argument,currentUser, currentPassword);
                 break;
             case ("remove_head"):
-                removeHead(currentUser);
+                removeHead(currentUser, currentPassword);
                 break;
             case ("exit"):
                 exit();
@@ -112,67 +114,67 @@ public class CommandManager {
     }
 
     public void help(){
-        helpCommand.execute("","");
+        helpCommand.execute("","","");
     }
 
-    public void show(){
-        showCommand.execute("","");
+    public void show(String currentUser, String currentPassword){
+        showCommand.execute("",currentUser, currentPassword);
     }
 
-    public void info(){
-        infoCommand.execute("","");
+    public void info(String currentUser, String currentPassword){
+        infoCommand.execute("",currentUser,currentPassword);
     }
 
-    public void add(Worker argument, String currentUser){
-        addCommand.execute(argument,currentUser);
+    public void add(Worker argument, String currentUser, String currentPassword){
+        addCommand.execute(argument,currentUser,currentPassword);
     }
 
-    public void addIfMax(Worker argument, String currentUser){
-        addIfMaxCommand.execute(argument,currentUser);
+    public void addIfMax(Worker argument, String currentUser, String currentPassword){
+        addIfMaxCommand.execute(argument,currentUser,currentPassword);
     }
 
-    public void addIfMin(Worker argument, String currentUser){
-        addIfMinCommand.execute(argument,currentUser);
+    public void addIfMin(Worker argument, String currentUser, String currentPassword){
+        addIfMinCommand.execute(argument,currentUser,currentPassword);
     }
 
-    public void update(Object argument, String currentUser){
-        updateCommand.execute(argument,currentUser);
+    public void update(Object argument, String currentUser, String currentPassword){
+        updateCommand.execute(argument,currentUser,currentPassword);
     }
 
-    public void clear(String currentUser){
-        clearCommand.execute("",currentUser);
+    public void clear(String currentUser, String currentPassword){
+        clearCommand.execute("",currentUser,currentPassword);
     }
 
-    public void filterByStatus(Object argument){
-        filterByStatusCommand.execute(argument,"");
+    public void filterByStatus(Object argument, String currentUser, String currentPassword){
+        filterByStatusCommand.execute(argument,"",currentPassword);
     }
 
-    public void printFieldDescendingStatus(){
-        printFieldDescendingStatusCommand.execute("","");
+    public void printFieldDescendingStatus(String currentUser, String currentPassword){
+        printFieldDescendingStatusCommand.execute("","",currentPassword);
     }
 
-    public void removeAllByPerson(Object argument,String currentUser){
-        removeAllByPersonCommand.execute(argument,currentUser);
+    public void removeAllByPerson(Object argument,String currentUser, String currentPassword){
+        removeAllByPersonCommand.execute(argument,currentUser,currentPassword);
     }
 
-    public void removeById(Object argument, String currentUser){
-        removeByIdCommand.execute(argument,currentUser);
+    public void removeById(Object argument, String currentUser, String currentPassword){
+        removeByIdCommand.execute(argument,currentUser,currentPassword);
     }
 
-    public void removeHead(String currentUser){
-        removeHeadCommand.execute("",currentUser);
+    public void removeHead(String currentUser, String currentPassword){
+        removeHeadCommand.execute("",currentUser,currentPassword);
     }
 
     public void save(){
-        saveCommand.execute("","");
+        saveCommand.execute("","",currentPassword);
     }
 
     public void exit(){
-        exitCommand.execute("","");
+        exitCommand.execute("","",currentPassword);
     }
 
-    public void signUp(Object argument){signUpCommand.execute(argument,"");}
+    public void signUp(Object argument){signUpCommand.execute(argument,"",currentPassword);}
 
-    public void signIn(Object argument){signInCommand.execute(argument,"");}
+    public void signIn(Object argument){signInCommand.execute(argument,"",currentPassword);}
 
 }

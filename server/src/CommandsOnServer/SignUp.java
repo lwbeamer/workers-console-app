@@ -24,7 +24,7 @@ public class SignUp implements Executable{
 
 
     @Override
-    public void execute(Object argument, String currentUser) {
+    public void execute(Object argument, String currentUser, String currentPassword) {
         String[] args = argument.toString().split(" ",2);
         sender.send(database.signUp(args[0],args[1]));
     }

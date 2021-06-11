@@ -4,6 +4,7 @@ package CommandsOnServer;
 import Answer.Answer;
 import Answer.AnswerStatus;
 import Control.CollectionOperator;
+import Control.Database;
 import Control.Sender;
 import Exceptions.EmptyCollectionException;
 import Exceptions.PermissonDeniedException;
@@ -19,11 +20,13 @@ public class RemoveById implements Executable{
 
     private final CollectionOperator collectionOperator;
     private final Sender sender;
+    private final Database database;
 
 
-    public RemoveById(CollectionOperator collectionOperator, Sender sender) {
+    public RemoveById(CollectionOperator collectionOperator, Sender sender, Database database) {
         this.collectionOperator = collectionOperator;
         this.sender = sender;
+        this.database = database;
     }
 
     /**
@@ -41,8 +44,9 @@ public class RemoveById implements Executable{
      * @return Статус выполнения команды
      */
     @Override
-    public void execute(Object argument, String currentUser) {
+    public void execute(Object argument, String currentUser, String currentPassword) {
         try {
+            if (!database.checkUser(currentUser,currentPassword)) throw new PermissonDeniedException();
             if (collectionOperator.collectionSize() == 0) throw new EmptyCollectionException();
             long id = Long.parseLong((String) argument);
             Worker workerToRemove = collectionOperator.getById(id);

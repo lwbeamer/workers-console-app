@@ -21,7 +21,7 @@ public class ExecuteScript implements Executable{
      * @return Статус выполнения команды
      */
     @Override
-    public void execute(Object argument, String currentUser) {
+    public void execute(Object argument, String currentUser, String currentPassword) {
 
     }
 }

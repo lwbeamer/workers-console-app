@@ -23,8 +23,8 @@ public class Database {
 
         try {
             Class.forName("org.postgresql.Driver");
-            //connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/workers", "postgres", "2281337");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5430/studs", "s313084", "eqh090");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/workers", "postgres", "2281337");
+            //connection = DriverManager.getConnection("jdbc:postgresql://localhost:5430/studs", "s313084", "eqh090");
             statement = connection.createStatement();
 
         } catch (SQLException e) {
@@ -92,6 +92,39 @@ public class Database {
 
         } catch (SQLException | NoSuchAlgorithmException e) {
             return new Answer("Непредвиденная ошибка!",AnswerStatus.ERROR);
+        }
+    }
+
+    public synchronized boolean checkUser(String login, String password){
+        try{
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM table_users;");
+            String existingLogin = "";
+
+            byte[] existingPassword = null;
+
+            while (resultSet.next()){
+                existingLogin = resultSet.getString("login");
+                existingPassword = resultSet.getBytes("password");
+                if (login.equals(existingLogin)) break;
+            }
+
+            if (!login.equals(existingLogin)){
+                return false;
+            }
+
+            byte[] passwordData = password.getBytes();
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-384");
+            byte[] digest = messageDigest.digest(passwordData);
+
+
+            if (!Arrays.equals(existingPassword, digest)){
+                return false;
+            }
+
+            return true;
+
+        } catch (SQLException | NoSuchAlgorithmException e) {
+            return false;
         }
     }
 

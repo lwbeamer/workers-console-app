@@ -25,7 +25,7 @@ public class Help implements Executable, Serializable {
      * @return Статус выполнения команды
      */
     @Override
-    public void execute(Object argument, String currentUser) {
+    public void execute(Object argument, String currentUser, String currentPassword) {
 
         String info = Help.description() + "\n" +
                 Info.description() + "\n" +

@@ -7,6 +7,7 @@ public class Request implements Serializable {
     private final String command;
     private Object arg;
     private String currentUser;
+    private String currentPassword;
 
     public Request(String command) {
         this.command = command;
@@ -29,7 +30,15 @@ public class Request implements Serializable {
         this.currentUser = currentUser;
     }
 
+    public void setCurrentPassword(String currentPassword){
+        this.currentPassword = currentPassword;
+    }
+
     public String getCurrentUser() {
         return currentUser;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
     }
 }

@@ -3,6 +3,7 @@ package CommandsOnServer;
 import Answer.Answer;
 import Answer.AnswerStatus;
 import Control.CollectionOperator;
+import Control.Database;
 import Control.Sender;
 
 import Exceptions.PermissonDeniedException;
@@ -18,11 +19,13 @@ public class Add implements Executable{
 
     private final CollectionOperator collectionOperator;
     private final Sender sender;
+    private final Database database;
 
 
-    public Add(CollectionOperator collectionOperator, Sender sender) {
+    public Add(CollectionOperator collectionOperator, Sender sender, Database database) {
         this.collectionOperator = collectionOperator;
         this.sender = sender;
+        this.database = database;
     }
 
     /**
@@ -35,11 +38,12 @@ public class Add implements Executable{
 
 
     @Override
-    public void execute(Object argument, String currentUser) {
-        Worker workerToAdd = (Worker) argument;
-        long checkNew = workerToAdd.getId();
-
+    public void execute(Object argument, String currentUser, String currentPassword) {
         try {
+            if (!database.checkUser(currentUser,currentPassword)) throw new PermissonDeniedException();
+            Worker workerToAdd = (Worker) argument;
+            long checkNew = workerToAdd.getId();
+
             if (checkNew == 0) {
                 collectionOperator.addToCollection(workerToAdd, currentUser);
                 collectionOperator.sortCollection();
