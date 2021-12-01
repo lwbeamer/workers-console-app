@@ -24,7 +24,7 @@ public class Database {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/workers", "postgres", "2281337");
-            //connection = DriverManager.getConnection("jdbc:postgresql://localhost:5430/studs", "s313084", "eqh090");
+            //connection = DriverManager.getConnection("jdbc:postgresql://localhost:5430/studs", "s******", "password");
             statement = connection.createStatement();
 
         } catch (SQLException e) {
